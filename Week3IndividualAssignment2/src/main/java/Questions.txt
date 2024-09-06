@@ -1,0 +1,8 @@
+Q: Explain how assertArrayEquals works and what it checks when comparing arrays.
+A: it checks the lenght and values inside of the arrays, and if they are equal the test will not fail, and if they different the test will fail giving an error.
+
+Q:Describe the outcome when the arrays do not match and how the test will respond.
+A:There will be an error in red and it will fail it, and it also shows what it was expecting and what it recieved
+
+Q:Explain how assertArrayEquals compares multi-dimensional arrays and what it means for them to be equal.
+A: it checks the length and values of all of the slots in the array and makes the test pass if theyy are equal, and will fail if they are not.
