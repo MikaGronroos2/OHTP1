@@ -1,10 +1,27 @@
-import static org.junit.Assert.assertEquals;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class AccountTest {
     private static Account account;
+    private static Account account2;
+
+    @BeforeClass
+    public static void beforeClass() {
+        account2 = new Account();
+        account2.deposit(1000.0);
+
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        System.out.println("This is how much was left in account2: " + account2.getBalance());
+        account2.withdraw(account2.getBalance());
+        System.out.println("This is how much was left in account2 after the robbery: " + account2.getBalance());
+    }
 
     @Before
     public void setUp() {
@@ -36,6 +53,7 @@ public class AccountTest {
         assertEquals(200.0, account.getBalance(), 0.01);
     }
 
+    @Test
     public void multipleAssertTest() {
         account.withdraw(20.0);
         assertEquals(80.0, account.getBalance(), 0.01);
@@ -44,4 +62,12 @@ public class AccountTest {
         account.deposit(200.0);
         assertEquals(430.0, account.getBalance(), 0.01);
     }
+
+    @Test
+    public void account2Test() {
+        account2.withdraw(50.0);
+        assertEquals(950.0, account2.getBalance(), 0.01);
+    }
+
+
 }
