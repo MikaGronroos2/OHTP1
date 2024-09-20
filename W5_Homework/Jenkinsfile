@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven3'
+        jdk 'JDK11'
+    }
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git url: 'https://github.com/MikaGronroos2/OHTP1.git', branch: 'main', credentialsId: '88639197-96eb-4b56-a471-8ecd32f99bd9'
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('W5_Homework') {
+                    bat 'mvn clean install'
+                }
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                dir('W5_Homework') {
+                    bat 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit 'W5_Homework/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Code Coverage Report') {
+            steps {
+                dir('W5_Homework') {
+                    bat 'mvn jacoco:report'
+                }
+            }
+            post {
+                always {
+                    jacoco execPattern: 'W5_Homework/target/jacoco.exec'
+                }
+            }
+        }
+    }
+}
