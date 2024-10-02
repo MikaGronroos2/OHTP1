@@ -3,12 +3,13 @@ pipeline {
 
     environment {
         // Define Docker Hub credentials ID
-        DOCKERHUB_CREDENTIALS_ID = 'mikagro'
+        DOCKERHUB_CREDENTIALS_ID = 'docker-hub-token'  // Change this to match your Jenkins credentials ID
         // Define Docker Hub repository name
         DOCKERHUB_REPO = 'mikagro/dockerhub'
         // Define Docker image tag
         DOCKER_IMAGE_TAG = 'latest'
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -27,8 +28,8 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS_ID) {
-                        docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push()
+                    withDockerRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS_ID}", url: 'https://index.docker.io/v1/' ]) {
+                        docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push("${DOCKER_IMAGE_TAG}")
                     }
                 }
             }
