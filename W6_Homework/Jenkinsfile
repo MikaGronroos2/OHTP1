@@ -1,5 +1,5 @@
 pipeline {
-    agent any // IN THE LECTURE I WILL EXPLAIN THE SCRIPT AND THE WORKFLOW
+    agent any
 
     environment {
         // Define Docker Hub credentials ID
@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/MikaGronroos2/OHTP1.git'
+                git branch: 'main', url: 'https://github.com/MikaGronroos2/OHTP1.git'
             }
         }
         stage('Build Docker Image') {
