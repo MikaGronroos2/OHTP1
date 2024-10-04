@@ -1,14 +1,11 @@
 pipeline {
     agent any
 
-    // Define Docker Hub credentials ID
-
-
     environment {
-            DOCKERHUB_CREDENTIALS_ID = 'docker-hub-icon'
-            DOCKERHUB_REPO = 'mikagro/dockerhub'
-            DOCKER_IMAGE_TAG = 'latest'
-        }
+        DOCKERHUB_CREDENTIALS_ID = 'docker-hub-icon'
+        DOCKERHUB_REPO = 'mikagro/dockerhub'
+        DOCKER_IMAGE_TAG = 'latest'
+    }
 
     stages {
         stage('Checkout') {
@@ -31,37 +28,36 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit 'W7_Lecture/target/surefire-reports/*.xml'
                 }
             }
         }
         stage('Code Coverage') {
             steps {
-                // Generate Jacoco report after the tests have run
-                bat 'mvn jacoco:report'
+                dir('W7_Lecture') {
+                    bat 'mvn jacoco:report'
+                }
             }
         }
         stage('Code Coverage Report') {
-                    steps {
-                        dir('W5_Homework') {
-                            bat 'mvn jacoco:report'
-                        }
-                    }
-                    post {
-                        always {
-                            jacoco execPattern: 'W7_Lecture/target/jacoco.exec'
-                        }
-                    }
+            steps {
+                dir('W7_Lecture') {
+                    bat 'mvn jacoco:report'
                 }
+            }
+            post {
+                always {
+                    jacoco execPattern: 'W7_Lecture/target/jacoco.exec'
+                }
+            }
+        }
         stage('Publish Test Results') {
             steps {
-                // Publish JUnit test results
-                junit '**/target/surefire-reports/*.xml'
+                junit 'W7_Lecture/target/surefire-reports/*.xml'
             }
         }
         stage('Publish Coverage Report') {
             steps {
-                // Publish Jacoco coverage report
                 jacoco()
             }
         }
@@ -83,4 +79,3 @@ pipeline {
         }
     }
 }
-
