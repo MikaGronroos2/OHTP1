@@ -2,9 +2,13 @@ pipeline {
     agent any
 
     // Define Docker Hub credentials ID
+
+
+    environment {
             DOCKERHUB_CREDENTIALS_ID = 'docker-hub-icon'
             DOCKERHUB_REPO = 'mikagro/dockerhub'
             DOCKER_IMAGE_TAG = 'latest'
+        }
 
     stages {
         stage('Checkout') {
