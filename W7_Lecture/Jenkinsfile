@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    // Define Docker Hub credentials ID
+            DOCKERHUB_CREDENTIALS_ID = 'docker-hub-icon'
+            DOCKERHUB_REPO = 'mikagro/dockerhub'
+            DOCKER_IMAGE_TAG = 'latest'
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/MikaGronroos2/OHTP1.git', credentialsId: '88639197-96eb-4b56-a471-8ecd32f99bd9'
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('W7_Lecture') {
+                    bat 'mvn clean install'
+                }
+            }
+        }
+        stage('Run Unit Tests') {
+            steps {
+                dir('W7_Lecture') {
+                    bat 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Code Coverage') {
+            steps {
+                // Generate Jacoco report after the tests have run
+                bat 'mvn jacoco:report'
+            }
+        }
+        stage('Code Coverage Report') {
+                    steps {
+                        dir('W5_Homework') {
+                            bat 'mvn jacoco:report'
+                        }
+                    }
+                    post {
+                        always {
+                            jacoco execPattern: 'W7_Lecture/target/jacoco.exec'
+                        }
+                    }
+                }
+        stage('Publish Test Results') {
+            steps {
+                // Publish JUnit test results
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
+        stage('Publish Coverage Report') {
+            steps {
+                // Publish Jacoco coverage report
+                jacoco()
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${env.DOCKERHUB_REPO}:${env.DOCKER_IMAGE_TAG}")
+                }
+            }
+        }
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKERHUB_CREDENTIALS_ID) {
+                        docker.image("${env.DOCKERHUB_REPO}:${env.DOCKER_IMAGE_TAG}").push()
+                    }
+                }
+            }
+        }
+    }
+}
+
