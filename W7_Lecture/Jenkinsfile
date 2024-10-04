@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/MikaGronroos2/OHTP1.git', credentialsId: '88639197-96eb-4b56-a471-8ecd32f99bd9'
+                git branch: 'main', url: 'https://github.com/MikaGronroos2/OHTP1.git'
             }
         }
         stage('Build') {
